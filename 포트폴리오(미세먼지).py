@@ -34,7 +34,7 @@ import lightgbm as lgb
 ldf = int(len(df)*0.99)
 
 
-df['일시'] = pd.to_datetime(df['일시'])
+df['일시'] = pd.to_datetime(df['일시'] ,format='%Y-%m-%d %H:%M')
 
 df['월'] = df['일시'].dt.month
 
@@ -54,6 +54,7 @@ train = df.iloc[:ldf]
 
 test = df.iloc[ldf:]
 
+print(train.head(120))
 # import seaborn as sns
 # import matplotlib.pyplot as plt
 # sns.histplot(train['초미세먼지(PM25)'], bins=30, kde=True, color='skyblue')
@@ -65,10 +66,10 @@ target = train.pop('초미세먼지(PM25)')
 train['구분'] = train['구분'].astype('category')
 test['구분'] = test['구분'].astype('category')
 
+train['월'] = train['월'].astype('category')
+train['일'] = train['일'].astype('category')
 
-
-
-print(train.head())
+# print(train.head())
 
 from sklearn.model_selection import train_test_split
 
@@ -88,7 +89,7 @@ model = lgb.LGBMRegressor(
     random_state=42)
 # 파라미터 개선
 
-model.fit(X_train,y_train_log, eval_set=[(X_val,y_val_log)], categorical_feature=['구분'] )
+model.fit(X_train,y_train_log, eval_set=[(X_val,y_val_log)], categorical_feature=['구분','월','일'] )
 
 y_pred_log = model.predict(X_val)
 
@@ -103,6 +104,9 @@ r2score = r2_score(y_val,pred)
 print('rmse' , rmse)
 print('r2score' , r2score)
 
+import matplotlib.pyplot as plt
+lgb.plot_importance(model, max_num_features=20)
+plt.show()
 
 import joblib
 

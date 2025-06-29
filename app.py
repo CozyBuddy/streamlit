@@ -33,7 +33,8 @@ if st.button("예측하기"):
     import pandas as pd
     X_input = pd.DataFrame(X_input)
     X_input['구분'] = X_input['구분'].astype('category')
-
+    X_input['월'] = X_input['월'].astype('category')
+    X_input['일'] = X_input['일'].astype('category')
     import numpy as np
     pred = model.predict(X_input)
     st.write(f"예측된 PM2.5 농도: {np.expm1(pred[0]):.2f} ㎍/m³")
