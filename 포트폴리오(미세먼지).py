@@ -78,12 +78,13 @@ import numpy as np
 y_train_log = np.log1p(y_train)
 y_val_log = np.log1p(y_val)
 model = lgb.LGBMRegressor( 
+     device='gpu',  
    num_leaves=100,
     max_depth=-1,
     learning_rate=0.05,
     n_estimators=3000,
     subsample=0.8,
-    colsample_bytree=0.8,
+    colsample_bytree=1,
     random_state=42)
 # 파라미터 개선
 
