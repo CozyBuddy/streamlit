@@ -6,14 +6,23 @@ from torch.nn.utils.rnn import pad_sequence
 
 
 
-sp = spm.SentencePieceProcessor()
-sp.load("spm_ko.model")
+@st.cache_resource
+def load_sp_model():
+    sp = spm.SentencePieceProcessor()
+    sp.load("spm_ko.model")
+    return sp
+
+sp = load_sp_model()
 
 
 
+@st.cache_resource
+def load_sp2_model():
+    sp = spm.SentencePieceProcessor()
+    sp.load('spm_en.model')
+    return sp
 
-sp2 = spm.SentencePieceProcessor()
-sp2.load("spm_en.model")
+sp2 = load_sp2_model()
 
 
 SRC_LANGUAGE = 'ko'
@@ -215,8 +224,24 @@ def translate(model , source_sentence):
 
 # 모델 불러오기
 
-model.load_state_dict(torch.load("checkpoint.pth", map_location=DEVICE)['model_state_dict'])
-model.eval()
+@st.cache_resource
+def load_model():
+    model = Seq2SeqTransformer(
+    num_encoder_layers=3,
+    num_decoder_layers=3,
+    emb_size=512,
+    max_len=512,
+    nhead=8,
+    src_vocab_size=sp.get_piece_size(),
+    tgt_vocab_size=sp2.get_piece_size(),
+    dim_feedforward=2048
+        ).to(DEVICE)
+    state_dict = torch.load("checkpoint.pth", map_location=DEVICE)["model_state_dict"]
+    model.load_state_dict(state_dict)
+    model.eval()
+    return model
+
+model = load_model()
 
 st.title("한-영 번역모델")
 
