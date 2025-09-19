@@ -3,8 +3,15 @@ import torch
 import sentencepiece as spm
 from torch.utils.data import DataLoader
 from torch.nn.utils.rnn import pad_sequence
+import os 
 
-
+GITHUB_PAT = st.secrets["GITHUB_PAT"]
+REPO_URL = f"https://CozzyBuddy:{GITHUB_PAT}@github.com/CozzyBuddy/streamlit.git"
+if not os.path.exists("streamlit"):  # 폴더가 없으면 클론
+    os.system(f"git clone -b main {REPO_URL}")
+else:  # 이미 있으면 pull
+    os.chdir("streamlit")
+    os.system(f"git pull {REPO_URL}")
 
 @st.cache_resource
 def load_sp_model():
