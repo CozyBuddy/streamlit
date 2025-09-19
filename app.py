@@ -4,6 +4,8 @@ import sentencepiece as spm
 from torch.utils.data import DataLoader
 from torch.nn.utils.rnn import pad_sequence
 import os 
+import requests
+from pathlib import Path
 
 GITHUB_PAT = st.secrets["GITHUB_PAT"]
 REPO_URL = f"https://CozzyBuddy:{GITHUB_PAT}@github.com/CozzyBuddy/streamlit.git"
@@ -12,6 +14,16 @@ if not os.path.exists("streamlit"):  # 폴더가 없으면 클론
 else:  # 이미 있으면 pull
     os.chdir("streamlit")
     os.system(f"git pull {REPO_URL}")
+
+url = "https://raw.githubusercontent.com/CozzyBuddy/streamlit/main/checkpoint.pth"
+token = st.secrets["GITHUB_PAT"]
+headers = {"Authorization": f"token {token}"}
+r = requests.get(url, headers=headers)
+
+path = Path("streamlit/checkpoint.pth")
+path.parent.mkdir(parents=True, exist_ok=True)
+with open(path, "wb") as f:
+    f.write(r.content)
 
 @st.cache_resource
 def load_sp_model():
