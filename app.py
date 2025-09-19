@@ -251,7 +251,8 @@ def load_model():
     tgt_vocab_size=sp2.get_piece_size(),
     dim_feedforward=2048
         ).to(DEVICE)
-    state_dict = torch.load("checkpoint.pth", map_location=DEVICE)["model_state_dict"]
+    model_path = download_model()
+    state_dict = torch.load(model_path, map_location=DEVICE)["model_state_dict"]
     model.load_state_dict(state_dict)
     model.eval()
     return model
