@@ -3,31 +3,6 @@ import torch
 import sentencepiece as spm
 from torch.utils.data import DataLoader
 from torch.nn.utils.rnn import pad_sequence
-import os 
-import requests
-from pathlib import Path
-
-# 깃허브 PAT
-GITHUB_PAT = st.secrets["GITHUB_PAT"]
-
-# 코드 레포 클론/업데이트
-REPO_URL = f"https://CozzyBuddy:{GITHUB_PAT}@github.com/CozzyBuddy/streamlit.git"
-if not os.path.exists("streamlit"):
-    os.system(f"git clone -b main {REPO_URL}")
-else:
-    os.chdir("streamlit")
-    os.system(f"git pull {REPO_URL}")
-    os.chdir("..")
-
-# 큰 파일 다운로드
-url = "https://raw.githubusercontent.com/CozzyBuddy/streamlit/main/checkpoint.pth"
-headers = {"Authorization": f"token {GITHUB_PAT}"}
-r = requests.get(url, headers=headers)
-
-path = Path("streamlit/checkpoint.pth")
-path.parent.mkdir(parents=True, exist_ok=True)
-with open(path, "wb") as f:
-    f.write(r.content)
 
 @st.cache_resource
 def load_sp_model():
