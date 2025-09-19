@@ -7,17 +7,21 @@ import os
 import requests
 from pathlib import Path
 
+# 깃허브 PAT
 GITHUB_PAT = st.secrets["GITHUB_PAT"]
+
+# 코드 레포 클론/업데이트
 REPO_URL = f"https://CozzyBuddy:{GITHUB_PAT}@github.com/CozzyBuddy/streamlit.git"
-if not os.path.exists("streamlit"):  # 폴더가 없으면 클론
+if not os.path.exists("streamlit"):
     os.system(f"git clone -b main {REPO_URL}")
-else:  # 이미 있으면 pull
+else:
     os.chdir("streamlit")
     os.system(f"git pull {REPO_URL}")
+    os.chdir("..")
 
+# 큰 파일 다운로드
 url = "https://raw.githubusercontent.com/CozzyBuddy/streamlit/main/checkpoint.pth"
-token = st.secrets["GITHUB_PAT"]
-headers = {"Authorization": f"token {token}"}
+headers = {"Authorization": f"token {GITHUB_PAT}"}
 r = requests.get(url, headers=headers)
 
 path = Path("streamlit/checkpoint.pth")
