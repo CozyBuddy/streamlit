@@ -127,21 +127,21 @@ class Seq2SeqTransformer(nn.Module):
 
 from torch import optim
 
-BATCH_SIZE = 128
+BATCH_SIZE = 16
 DEVICE = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 print(DEVICE)
 print(sp.get_piece_size())
 
 print(sp.unk_id() , sp.pad_id() , sp.bos_id(), sp.eos_id())
 model = Seq2SeqTransformer(
-    num_encoder_layers=3,
-    num_decoder_layers=3,
+    num_encoder_layers=6,
+    num_decoder_layers=6,
     emb_size=512,
     max_len=512,
     nhead=8,
     src_vocab_size=sp.get_piece_size(),
     tgt_vocab_size=sp2.get_piece_size(),
-    dim_feedforward=2048
+    dim_feedforward=1024
 ).to(DEVICE)
 
 criterion = nn.CrossEntropyLoss(ignore_index=PAD_IDX).to(DEVICE)
@@ -242,14 +242,14 @@ def translate(model , source_sentence):
 @st.cache_resource
 def load_model():
     model = Seq2SeqTransformer(
-    num_encoder_layers=3,
-    num_decoder_layers=3,
+    num_encoder_layers=6,
+    num_decoder_layers=6,
     emb_size=512,
     max_len=512,
     nhead=8,
     src_vocab_size=sp.get_piece_size(),
     tgt_vocab_size=sp2.get_piece_size(),
-    dim_feedforward=2048
+    dim_feedforward=1024
         ).to(DEVICE)
     model_path = download_model()
     state_dict = torch.load(model_path, map_location=DEVICE)["model_state_dict"]
