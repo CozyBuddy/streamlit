@@ -6,7 +6,7 @@ from torch.nn.utils.rnn import pad_sequence
 import os 
 import requests
 
-MODEL_URL = "http://140.83.86.42:8080/checkpoint.pth"
+MODEL_URL = "http://140.83.55.126:8080/checkpoint.pth"
 MODEL_PATH = "checkpoint.pth"
 
 @st.cache_resource # Streamlit의 캐시를 사용하여 한 번만 다운로드하도록 설정
